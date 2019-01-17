@@ -1,13 +1,9 @@
 #include<stdio.h>
 #include<stdlib.h>
-#include<windows.h>
 #include "log.h"
 
 #define X_SIZE 50
 #define Y_SIZE 30
-
-#define KEYPRESSED -32768
-#define LIMITSCANCODE 255
 
 int main();
 
@@ -23,13 +19,6 @@ void edit_grid(struct data_grid *grid, int x, int y, int val);
 
 int main()
 {
-	do
-	{
-		if(GetAsyncKeyState(0x57))
-		{
-			printf("yeet");
-		}
-	}while(1);
 	return 0;
 }
 void edit_grid(struct data_grid *grid, int x, int y, int val)
