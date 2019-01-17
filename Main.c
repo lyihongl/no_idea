@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include "log.h"
+#include "io.h"
 
 #define X_SIZE 50
 #define Y_SIZE 30
@@ -19,6 +20,13 @@ void edit_grid(struct data_grid *grid, int x, int y, int val);
 
 int main()
 {
+	while(1)
+	{
+		if(key_pressed(0x41))
+		{
+			printf("yet");
+		}
+	}
 	return 0;
 }
 void edit_grid(struct data_grid *grid, int x, int y, int val)
