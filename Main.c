@@ -20,13 +20,8 @@ void edit_grid(struct data_grid *grid, int x, int y, int val);
 
 int main()
 {
-	while(1)
-	{
-		if(key_pressed(0x41))
-		{
-			printf("yet");
-		}
-	}
+	short key_released = 1;
+	single_key_press(0x41, &key_released);
 	return 0;
 }
 void edit_grid(struct data_grid *grid, int x, int y, int val)
