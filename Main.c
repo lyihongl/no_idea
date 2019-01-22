@@ -64,10 +64,44 @@ int main()
 			if(single_key_press(0x41, &key_down[0]))
 			{
 				edit_grid(&(snake_game->grid), snake_game->headx, snake_game->heady, 0);
-				snake_game->headx++;
+				snake_game->headx--;
+				if(snake_game->headx<1)
+				{
+					snake_game->headx = X_SIZE-2;
+				}
 				edit_grid(&(snake_game->grid), snake_game->headx, snake_game->heady, 1);
 			}
-			if(single_key_press(0x1b, &key_down[1]))
+			if(single_key_press(0x44, &key_down[1]))
+			{
+				edit_grid(&(snake_game->grid), snake_game->headx, snake_game->heady, 0);
+				snake_game->headx++;
+				if(snake_game->headx>=X_SIZE)
+				{
+					snake_game->headx = 1;
+				}
+				edit_grid(&(snake_game->grid), snake_game->headx, snake_game->heady, 1);
+			}
+			if(single_key_press(0x57, &key_down[2]))
+			{
+				edit_grid(&(snake_game->grid), snake_game->headx, snake_game->heady, 0);
+				snake_game->heady--;
+				if(snake_game->heady<1)
+				{
+					snake_game->heady = Y_SIZE-2;
+				}
+				edit_grid(&(snake_game->grid), snake_game->headx, snake_game->heady, 1);
+			}
+			if(single_key_press(0x53, &key_down[3]))
+			{
+				edit_grid(&(snake_game->grid), snake_game->headx, snake_game->heady, 0);
+				snake_game->heady++;
+				if(snake_game->heady>=Y_SIZE)
+				{
+					snake_game->heady = 1;
+				}
+				edit_grid(&(snake_game->grid), snake_game->headx, snake_game->heady, 1);
+			}
+			if(single_key_press(0x1b, &key_down[15]))
 			{
 				run = 0;
 			}
