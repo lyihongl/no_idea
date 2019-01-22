@@ -11,34 +11,51 @@ int main();
 
 struct data_grid
 {
-	int x[X_SIZE];
-	int y[Y_SIZE];
+	int grid[X_SIZE][Y_SIZE];
+};
+
+struct snake_instance
+{
+	struct data_grid grid;
+	int headx, heady;
 };
 
 void init_grid(struct data_grid *grid);
 void draw_grid(struct data_grid *grid);
 void edit_grid(struct data_grid *grid, int x, int y, int val);
+void update(struct snake_instance * snake);
+void init_game(struct snake_instance * snake);
 
 int main()
 {
-	struct timeb start, end;
-	short key_down[2] = {0, 0};
+	//for key the keyboard input system
+	short key_down[16];
+
 	short run = 1;
+
+	struct snake_instance *snake_game = (struct snake_instance*)malloc(sizeof(struct snake_instance));
+		
+	//snake_game->grid = (struct data_grid*)malloc(sizeof(struct data_grid));
+	init_game(snake_game);
+
+	//fps keeping and game loop
+	struct timeb start, end;
 	ftime(&start);
 	int delta_t = 0;
 	int sum = 0;
 	int frames = 0;
+
 	while(run)
 	{
 		ftime(&end);	
 		delta_t = (int)(1000.0*(end.time-start.time)+end.millitm-start.millitm);
 		if(delta_t > 16)
 		{
+			draw_grid(&(snake_game->grid));
 			frames++;
 			sum+=delta_t;
 			if(sum >= 1000)
 			{
-				//printf("%d \r\n", frames);
 				ALOG("%d \r\n", frames);
 				frames = 0;
 				sum = 0;
@@ -46,7 +63,9 @@ int main()
 			ftime(&start);
 			if(single_key_press(0x41, &key_down[0]))
 			{
-				//printf("working");
+				edit_grid(&(snake_game->grid), snake_game->headx, snake_game->heady, 0);
+				snake_game->headx++;
+				edit_grid(&(snake_game->grid), snake_game->headx, snake_game->heady, 1);
 			}
 			if(single_key_press(0x1b, &key_down[1]))
 			{
@@ -62,13 +81,19 @@ void edit_grid(struct data_grid *grid, int x, int y, int val)
 	{
 		return;
 	}
-	grid->x[x] = val;
-	grid->y[y] = val;
+	grid->grid[x][y] = val;
 }
 void init_grid(struct data_grid *grid)
 {
-	for(int i = 0; i<Y_SIZE; grid->y[i] = 0, ++i);
-	for(int i = 0; i<X_SIZE; grid->x[i] = 0, ++i);
+	ALOG("2: %p \r\n", grid);
+	//grid = (struct data_grid*)malloc(sizeof(struct data_grid));
+	for(int i = 0; i<Y_SIZE; i++)
+	{
+		for(int j = 0; j<X_SIZE; j++)
+		{
+			grid->grid[j][i] = 0;
+		}
+	}
 }
 
 void draw_grid(struct data_grid *grid)
@@ -78,16 +103,41 @@ void draw_grid(struct data_grid *grid)
 	{
 		for(int j = 0; j<X_SIZE; j++)
 		{
-			if(grid->x[j] && grid->y[i])
+			if(grid->grid[j][i])
 			{
 				//printf("%d %d", i, j);
 				printf("%c", '#');
 			}
 			else
 			{
-				printf("  ");
+				printf(" ");
 			}
 		}
 		printf("\r\n");
 	}
+}
+
+void init_game(struct snake_instance *snake)
+{
+	ALOG("1: %p \r\n", &(snake->grid));
+	init_grid(&(snake->grid));
+	snake->headx = 3;
+	snake->heady = 3;
+	for(int i = 0; i<Y_SIZE; i++)
+	{
+		edit_grid(&(snake->grid), 0, i, 1);
+		edit_grid(&(snake->grid), X_SIZE-1, i, 1);
+	}
+	for(int i = 0; i<X_SIZE; i++)
+	{
+		edit_grid(&(snake->grid), i, 0, 1);
+		edit_grid(&(snake->grid), i, Y_SIZE-1, 1);
+	}
+	edit_grid(&(snake->grid), snake->headx, snake->heady, 1);
+	//printf("%d %d \r\n", snake->grid.x[1], snake->grid.y[1]);
+}
+
+void update(struct snake_instance *snake)
+{
+
 }
