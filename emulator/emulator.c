@@ -1,20 +1,5 @@
-struct cpu
-{
-	unsigned short opcode;
-	unsigned char memory[4096];
-	unsigned char cpu_reg[16];
-	unsigned short index_reg;
-	unsigned short program_counter;
-	unsigned char gfx[64*32];
-	unsigned char delay_timer;
-	unsigned char sound_timer;
-	unsigned short stack[16];
-	unsigned short stackp;
-	unsigned char key[16];
-
-	unsigned char chip8_fontset[80] =
-	{ 
-  		0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
+unsigned char chip8_fontset[80] = {
+		0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
   		0x20, 0x60, 0x20, 0x20, 0x70, // 1
   		0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
   		0xF0, 0x10, 0xF0, 0x10, 0xF0, // 3
@@ -31,7 +16,20 @@ struct cpu
   		0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
   		0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 	};
-	
+struct cpu
+{
+	unsigned short opcode;
+	unsigned char memory[4096];
+	unsigned char cpu_reg[16];
+	unsigned short index_reg;
+	unsigned short pc;
+	unsigned char gfx[64*32];
+	unsigned char delay_timer;
+	unsigned char sound_timer;
+	unsigned short stack[16];
+	unsigned short stackp;
+	unsigned char key[16];
+
 };
 
 void initialize();
@@ -48,9 +46,33 @@ void initialize(struct cpu *instance)
 	instance->opcode = 0;
 	instance->index_reg = 0;
 	instance->stackp = 0;
+	instance->delay_timer = 0;
+	instance->sound_timer = 0;
+
+	//load fontset
 	for(int i = 0; i<80; i++)
 	{
-		instance->memory[i] = instance->chip8_fontset[i];
+		instance->memory[i+0x50] = chip8_fontset[i];
+	}
+	//clear display
+	for(int i = 0; i<2048; i++)
+	{
+		instance->gfx[i] = 0;
+	}
+	for(int i = 0; i<16; i++)
+	{
+		instance->stack[i]	= 0;
+		instance->key[i] 		= 0;
+		instance->cpu_reg[i] 	= 0;
+	}
+	for(int i = 0; i<4096; i++)
+	{
+		instance->memory[i] = 0;
 	}
 	
+}
+
+void emulate_cycle(struct cpu *p)
+{	
+	p->opcode = p->memory[p->pc] << 8 | p->memory[p->pc+1];
 }
