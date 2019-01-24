@@ -119,10 +119,10 @@ int main()
 			update(snake_game, dir, &current_loc);
 			ALOG("snake instace ad 2: %p \r\n", snake_game);
 			ALOG("current loc 3: %d \r\n", current_loc);
-			for(int i = 0; i<10; i++)
-			{
-				printf("snake head here: %d %d %d \r\n", snake_game->game_snake[i].headx, snake_game->game_snake[i].heady, snake_game->grid.grid[snake_game->game_snake[i].headx][snake_game->game_snake[i].heady]);
-			}
+//			for(int i = 0; i<10; i++)
+//			{
+//				printf("snake head here: %d %d %d \r\n", snake_game->game_snake[i].headx, snake_game->game_snake[i].heady, snake_game->grid.grid[snake_game->game_snake[i].headx][snake_game->game_snake[i].heady]);
+//			}
 			//edit_grid(&(snake_game->grid), snake_game->game_snake[0].headx, snake_game->game_snake[0].heady, 1);
 		}
 	}
