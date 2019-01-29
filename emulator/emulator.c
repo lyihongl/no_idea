@@ -1,3 +1,4 @@
+#include<stdio.h>
 unsigned char chip8_fontset[80] = {
 		0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
   		0x20, 0x60, 0x20, 0x20, 0x70, // 1
@@ -75,4 +76,35 @@ void initialize(struct cpu *instance)
 void emulate_cycle(struct cpu *p)
 {	
 	p->opcode = p->memory[p->pc] << 8 | p->memory[p->pc+1];
+
+	switch(p->opcode & 0xF000)
+	{
+		case 0x0000:
+
+			switch(p->opcode)
+			{
+				case 0x00E0:
+					break;
+				case 0x00EE:
+					break;
+			}
+			break;
+		case 0x1000:
+			p->pc = p->opcode & 0x0FFF;
+			break;
+		case 0x2000:
+			p->stack[(p->stackp++)&0xF] = p->pc;
+			p->pc = p->opcode & 0x0FFF;
+			break;
+		case 0x3000:
+			if(p->cpu_reg[(p->opcode & 0x0F00) >> 8] == p->opcode & 0x00FF)
+			{
+				p->pc += 4;
+			}
+			else
+			{
+				p->pc+= 2;
+			}
+		default: printf("Wrong op code \r\n");
+	}
 }
