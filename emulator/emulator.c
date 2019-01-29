@@ -43,12 +43,12 @@ int main(int argc, char **argv)
 
 void initialize(struct cpu *instance)
 {
-	instance->pc = 0x200;
-	instance->opcode = 0;
-	instance->index_reg = 0;
-	instance->stackp = 0;
-	instance->delay_timer = 0;
-	instance->sound_timer = 0;
+	instance->pc 			= 0x200;
+	instance->opcode 		= 0;
+	instance->index_reg 	= 0;
+	instance->stackp 		= 0;
+	instance->delay_timer 	= 0;
+	instance->sound_timer 	= 0;
 
 	//load fontset
 	for(int i = 0; i<80; i++)
@@ -62,7 +62,7 @@ void initialize(struct cpu *instance)
 	}
 	for(int i = 0; i<16; i++)
 	{
-		instance->stack[i]	= 0;
+		instance->stack[i] 		= 0;
 		instance->key[i] 		= 0;
 		instance->cpu_reg[i] 	= 0;
 	}
@@ -83,7 +83,8 @@ void emulate_cycle(struct cpu *p)
 
 			switch(p->opcode)
 			{
-				case 0x00E0:
+				//TODO: Implement these features
+				case 0x00E0: 
 					break;
 				case 0x00EE:
 					break;
@@ -103,8 +104,70 @@ void emulate_cycle(struct cpu *p)
 			}
 			else
 			{
-				p->pc+= 2;
+				p->pc += 2;
 			}
+			break;
+		case 0x4000:
+			if(p->cpu_reg[(p->opcode & 0x0F00) >> 8] != p->opcode & 0x00FF)
+			{
+				p->pc += 4;
+			}
+			else
+			{
+				p->pc += 2;
+			}
+			break;
+		case 0x5000:
+			if(p->cpu_reg[(p->opcode & 0x0F00) >> 8] == p->cpu_reg[(p->opcode & 0x00F0) >> 4])
+			{
+				p->pc += 4;
+			}
+			else
+			{
+				p->pc += 2;
+			}
+			break;
+		case 0x6000:
+			cpu_reg[(p->opcode & 0x0F00) >> 8] = p->opcode & 0x00FF;
+			p->pc += 2;
+			break;
+		case 0x7000:
+			cpu_reg[(p->opcode & 0x0F00) >> 8] += p->opcode & 0x00FF;
+			p->pc += 2;
+			break;
+		case 0x8000:
+			switch(p->opcode & 0x000F)
+			{
+				case 0x0000:
+					cpu_reg[(p->opcode & 0x0F00) >> 8] = cpu_reg[(p->opcode & 0x00F0) >> 4];
+					p->pc += 2;
+					break;
+				case 0x0001:
+					cpu_reg[(p->opcode & 0x0F00) >> 8] =cpu_reg[(p->opcode & 0x0F00) >> 8]|cpu_reg[(p->opcode & 0x00F0) >> 4];
+					p->pc += 2;
+					break;
+				case 0x0002:
+					cpu_reg[(p->opcode & 0x0F00) >> 8] =cpu_reg[(p->opcode & 0x0F00) >> 8]&cpu_reg[(p->opcode & 0x00F0) >> 4];
+					p->pc += 2;
+					break;
+				case 0x0003:
+					cpu_reg[(p->opcode & 0x0F00) >> 8] =cpu_reg[(p->opcode & 0x0F00) >> 8]^cpu_reg[(p->opcode & 0x00F0) >> 4];
+					p->pc += 2;
+					break;
+				case 0x0004:
+					if(((int)(cpu_reg[(p->opcode & 0x0F00) >> 8] + cpu_reg[(p->opcode & 0x00F0)>> 4])) < 256)
+					{
+						cpu_reg[0xF] &= 0;
+					}
+					else
+					{
+						cpu_reg[0xF] = 1;
+					}
+					cpu_reg[(p->opcode & 0x0F00) >> 8] += cpu_reg[(p->opcode & 0x00F0)>> 4];
+					p->pc += 2;
+					break;
+			}
+			break;
 		default: printf("Wrong op code \r\n");
 	}
 }
