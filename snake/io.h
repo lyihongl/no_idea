@@ -1,4 +1,8 @@
+#define NOMINMAX
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include "log.h"
 short kbhit();
 short single_key_press(int vKey, short *key_down);
@@ -29,4 +33,28 @@ short single_key_press(int vKey, short *key_down)
 		*key_down = 0;
 	}
 	return 0;
+}
+
+void cls()
+{
+	const HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+	COORD topLeft = {0, 0};
+
+	fflush(stdout);
+	if(!GetConsoleScreenBufferInfo(hOut, &csbi))
+	{
+		abort();
+	}
+	DWORD length = csbi.dwSize.X * csbi.dwSize.Y;
+	DWORD written;
+
+	FillConsoleOutputCharacter(hOut, TEXT(' '), length, topLeft, &written);
+	FillConsoleOutputAttribute(hOut, csbi.wAttributes, length, topLeft, &written);
+	SetConsoleCursorPosition(hOut, topLeft);
+}
+void set_cursor_position(int x, int y)
+{
+
 }

@@ -62,7 +62,7 @@ int main()
 	int delta_t = 0;
 	int sum = 0;
 	int frames = 0;
-	int current_loc = snake_game->length;
+	int current_loc = snake_game->length-1;
 	
 	spawn_food(&(snake_game->grid));
 	short first_run_passed = 0;
@@ -146,7 +146,7 @@ int main()
 }
 void edit_grid(struct data_grid *grid, int x, int y, int val)
 {
-	if(val != 1 && val != 0)
+	if(val > 3 || val < 0)
 	{
 		return;
 	}
@@ -166,7 +166,8 @@ void init_grid(struct data_grid *grid)
 
 void draw_grid(struct data_grid *grid)
 {
-	system("clear");
+	//system("clear");
+	cls();
 	for(int i = 0; i<Y_SIZE; i++)
 	{
 		for(int j = 0; j<X_SIZE; j++)
@@ -175,6 +176,10 @@ void draw_grid(struct data_grid *grid)
 			{
 				//printf("%d %d", i, j);
 				printf("%c", '#');
+			}
+			else if(grid->grid[j][i] == 3)
+			{
+				printf("%c", 'x');
 			}
 			else if(grid->grid[j][i] == 2)
 			{
@@ -193,8 +198,8 @@ void init_game(struct snake_instance *snake)
 {
 	ALOG("1: %p \r\n", &(snake->grid));
 	init_grid(&(snake->grid));
-	snake->game_snake[0].headx = 3;
-	snake->game_snake[0].heady = 3;
+	snake->game_snake[0].headx = 5;
+	snake->game_snake[0].heady = 5;
 	snake->length = 3;
 	for(int i = 0; i<snake->length; i++)
 	{
@@ -207,15 +212,15 @@ void init_game(struct snake_instance *snake)
 	}
 	for(int i = 0; i<Y_SIZE; i++)
 	{
-		edit_grid(&(snake->grid), 0, i, 1);
-		edit_grid(&(snake->grid), X_SIZE-1, i, 1);
+		edit_grid(&(snake->grid), 0, i, 3);
+		edit_grid(&(snake->grid), X_SIZE-1, i, 3);
 	}
 	for(int i = 0; i<X_SIZE; i++)
 	{
-		edit_grid(&(snake->grid), i, 0, 1);
-		edit_grid(&(snake->grid), i, Y_SIZE-1, 1);
+		edit_grid(&(snake->grid), i, 0, 3);
+		edit_grid(&(snake->grid), i, Y_SIZE-1, 3);
 	}
-	edit_grid(&(snake->grid), snake->game_snake[0].headx, snake->game_snake[0].heady, 1);
+	//edit_grid(&(snake->grid), snake->game_snake[0].headx, snake->game_snake[0].heady, 1);
 	//printf("%d %d \r\n", snake->grid.x[1], snake->grid.y[1]);
 }
 
@@ -274,11 +279,12 @@ int update(struct snake_instance *snake, enum direction dir, int *current_loc)
 		//printf("this isnt working");
 		return 1;
 	}
-	edit_grid(&(snake->grid), snake->game_snake[*current_loc].headx, snake->game_snake[*current_loc].heady, 1);
+	//printf("%d, %d, %d \r\n", snake->game_snake[*current_loc].headx, snake->game_snake[*current_loc].heady, *current_loc);
 	if(snake->game_snake[*current_loc].heady>=Y_SIZE-1)	{ snake->game_snake[*current_loc].heady = 1;}
 	if(snake->game_snake[*current_loc].heady<1)			{ snake->game_snake[*current_loc].heady = Y_SIZE-2;}
 	if(snake->game_snake[*current_loc].headx>=X_SIZE-1)	{ snake->game_snake[*current_loc].headx = 1;}
 	if(snake->game_snake[*current_loc].headx<1)			{ snake->game_snake[*current_loc].headx = X_SIZE-2;}
+	edit_grid(&(snake->grid), snake->game_snake[*current_loc].headx, snake->game_snake[*current_loc].heady, 1);
 	*current_loc = *current_loc - 1;
 	ALOG("current loc 2: %d \r\n", *current_loc);
 
@@ -295,7 +301,8 @@ void spawn_food(struct data_grid *grid)
 	int x_rand = gen_rand(2, X_SIZE-2);
 	int y_rand = gen_rand(2, Y_SIZE-2);
 	
-	grid->grid[x_rand][y_rand] = 2;	
+	edit_grid(grid, x_rand, y_rand, 2);
+	//grid->grid[x_rand][y_rand] = 2;	
 	//printf("food: %d %d \r\n", x_rand, y_rand);
 }
 int detect_collision(struct data_grid *grid, int x, int y)
