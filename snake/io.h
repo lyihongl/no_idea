@@ -56,5 +56,8 @@ void cls()
 }
 void set_cursor_position(int x, int y)
 {
-
+	const HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	fflush(stdout);
+	COORD coord = {(SHORT)x, (SHORT)y};
+	SetConsoleCursorPosition(hOut, coord);
 }

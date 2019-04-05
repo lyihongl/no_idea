@@ -41,6 +41,7 @@ int update(struct snake_instance * snake, enum direction dir, int *current_loc);
 void init_game(struct snake_instance * snake);
 void spawn_food(struct data_grid *grid);
 int detect_collision(struct data_grid *grid, int x, int y);
+struct data_grid *copy_grid(struct data_grid *grid);
 
 int main()
 {
@@ -166,32 +167,65 @@ void init_grid(struct data_grid *grid)
 
 void draw_grid(struct data_grid *grid)
 {
+	//TODO: find the print statement and remove it, finish this
 	//system("clear");
-	cls();
-	for(int i = 0; i<Y_SIZE; i++)
+	//cls();
+	//struct data_grid *current_grid = grid;
+	struct data_grid *previous_grid = NULL;
+	int difference_grid[X_SIZE][Y_SIZE] = {0};
+	if(previous_grid != NULL)
 	{
-		for(int j = 0; j<X_SIZE; j++)
+		for(int i = 0; i<X_SIZE; i++)
 		{
-			if(grid->grid[j][i] == 1)
+			for(int j = 0; j<Y_SIZE; j++)
 			{
-				//printf("%d %d", i, j);
-				printf("%c", '#');
-			}
-			else if(grid->grid[j][i] == 3)
-			{
-				printf("%c", 'x');
-			}
-			else if(grid->grid[j][i] == 2)
-			{
-				printf("%c", '@');
-			}
-			else
-			{
-				printf(" ");
+				if(grid->grid[i][j] != previous_grid->grid[i][j])
+				{
+
+				}
 			}
 		}
-		printf("\r\n");
 	}
+	free(previous_grid);
+	previous_grid = copy_grid(grid);
+	//previous_grid = current_grid;
+	//for(int i = 0; i<Y_SIZE; i++)
+	//{
+		//for(int j = 0; j<X_SIZE; j++)
+		//{
+			//if(grid->grid[j][i] == 1)
+			//{
+				////printf("%d %d", i, j);
+				//printf("%c", '#');
+			//}
+			//else if(grid->grid[j][i] == 3)
+			//{
+				//printf("%c", 'x');
+			//}
+			//else if(grid->grid[j][i] == 2)
+			//{
+				//printf("%c", '@');
+			//}
+			//else
+			//{
+				//printf(" ");
+			//}
+		//}
+		//printf("\r\n");
+	//}
+}
+
+struct data_grid *copy_grid(struct data_grid *grid)
+{
+	struct data_grid *new_grid = (struct data_grid*)(malloc(sizeof(struct data_grid)));
+	for(int i = 0; i<X_SIZE; i++)
+	{
+		for(int j = 0; j<Y_SIZE; j++)
+		{
+			new_grid->grid[i][j] = grid->grid[i][j];
+		}
+	}
+	return new_grid;
 }
 
 void init_game(struct snake_instance *snake)
